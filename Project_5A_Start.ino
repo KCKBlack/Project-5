@@ -6,6 +6,7 @@
 #define eastRed 12
 #define eastYellow 11
 #define eastGreen 10
+#define yellowDirection 4
 
 #define yellowBlinkTime 500
 
@@ -81,4 +82,14 @@ void loop()
       digitalWrite(eastGreen, HIGH);
     }
   }
+}
+void changeYellowLight(int yellowDirection)
+{
+ for ( int a = 0; a < 5; a++)
+      {
+        digitalWrite(yellowDirection, LOW);
+        delay(yellowBlinkTime);
+        digitalWrite(yellowDirection, HIGH);
+        delay(yellowBlinkTime);
+      }
 }

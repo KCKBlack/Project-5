@@ -1,4 +1,3 @@
-
 #define westButton 3
 #define eastButton 13
 #define westRed 2
@@ -8,14 +7,11 @@
 #define eastYellow 11
 #define eastGreen 10
 
-
 #define yellowBlinkTime 500
 
 boolean trafficWest = true; // west = true, east = false
 int flowTime = 10000;
 int changeDelay = 2000;
-
-
 
 void setup()
 {
@@ -35,7 +31,6 @@ void setup()
   digitalWrite(eastYellow, LOW);
   digitalWrite(eastGreen, LOW);
 }
-
 void loop()
 {
   if ( digitalRead(westButton) == HIGH)
@@ -45,7 +40,6 @@ void loop()
       trafficWest = true;
       delay(flowTime);
       digitalWrite(eastGreen, LOW);
-
       digitalWrite(eastYellow, HIGH);
       delay(changeDelay);
       digitalWrite(eastYellow, LOW);
@@ -61,7 +55,6 @@ void loop()
       digitalWrite(westYellow, LOW);
       digitalWrite(westRed, LOW);
       digitalWrite(westGreen, HIGH);
-
     }
   }
   if ( digitalRead(eastButton) == HIGH)
@@ -86,9 +79,6 @@ void loop()
       digitalWrite(eastYellow, LOW);
       digitalWrite(eastRed, LOW);
       digitalWrite(eastGreen, HIGH);
-
     }
-
   }
-
 }

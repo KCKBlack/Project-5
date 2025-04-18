@@ -86,12 +86,18 @@ void loop() {
   } */
 
   // Condensed program
+  // If traffic is east and button is pushed then switches traffic from east to west
   if (digitalRead(westButton) == HIGH && !trafficWest) {
-    switchTrafficAll(eastGreen, eastYellow, eastRed, westYellow, westRed, westGreen);
+    switchTrafficFrom(eastGreen, eastYellow, eastRed);
+    changeYellowLight(westYellow);
     trafficWest = true;
-  } 
-  else if (digitalRead(eastButton) == HIGH && trafficWest) {
-    switchTrafficAll(westGreen, westYellow, westRed, eastYellow, eastRed, eastGreen);
+    switchTrafficTo(westYellow, westRed, westGreen);
+
+  // If traffic is west and button is pushed switches traffic from west to east
+  } else if (digitalRead(eastButton) == HIGH && trafficWest) {
+    switchTrafficFrom(westGreen, westYellow, westRed);
+    changeYellowLight(eastYellow);
+    switchTrafficTo(eastYellow, eastRed, eastGreen);
     trafficWest = false;
   }
 }
@@ -107,7 +113,7 @@ void changeYellowLight(int yellowPin) {
 }
 
 // Switch traffic flow either direction
-void switchTrafficAll(int fromGreen, int fromYellow, int fromRed, int toYellow, int toRed, int toGreen) {
+void switchTrafficFrom(int fromGreen, int fromYellow, int fromRed) {
   delay(flowTime);
 
   digitalWrite(fromGreen, LOW);
@@ -116,13 +122,13 @@ void switchTrafficAll(int fromGreen, int fromYellow, int fromRed, int toYellow, 
   digitalWrite(fromYellow, LOW);
   digitalWrite(fromRed, HIGH);
   delay(changeDelay);
+}
+void switchTrafficTo(int toYellow, int toRed, int toGreen) {
 
-  changeYellowLight(toYellow);
   digitalWrite(toYellow, LOW);
   digitalWrite(toRed, LOW);
   digitalWrite(toGreen, HIGH);
 }
-
 /*
 void switchTraffic(bool toWest) {
   if (toWest) {
@@ -138,8 +144,7 @@ void switchTraffic(bool toWest) {
     digitalWrite(westRed, LOW);
     digitalWrite(westGreen, HIGH);
     trafficWest = true;
-  } 
-  else {
+  } else {
     delay(flowTime);
     digitalWrite(westGreen, LOW);
     digitalWrite(westYellow, HIGH);

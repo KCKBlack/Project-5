@@ -6,7 +6,9 @@
 #define eastRed 12
 #define eastYellow 11
 #define eastGreen 10
-
+#define pedButton 4    // Push button to request crossing signal
+#define pedWhite 9     // Walk symbol (white LED)
+#define pedTime 20000  // 20 seconds pedestrian has to cross
 #define yellowBlinkTime 500
 
 boolean trafficWest = true;  // west = true, east = false
@@ -22,6 +24,9 @@ void setup() {
   pinMode(eastRed, OUTPUT);
   pinMode(eastYellow, OUTPUT);
   pinMode(eastGreen, OUTPUT);
+  pinMode(pedButton, INPUT);  // for part C
+  pinMode(pedWhite, OUTPUT);  // for part C
+
 
   digitalWrite(westRed, LOW);
   digitalWrite(westYellow, LOW);
@@ -29,6 +34,7 @@ void setup() {
   digitalWrite(eastRed, HIGH);
   digitalWrite(eastYellow, LOW);
   digitalWrite(eastGreen, LOW);
+  digitalWrite(pedWhite, LOW);  // for part C
 }
 
 void loop() {
@@ -85,6 +91,11 @@ void loop() {
     switchTraffic(false);
   } */
 
+
+
+  if (digitalRead(pedButton) == HIGH) {  // Check if pedestrian pressed the button
+    pedestrianCrossing();
+  }
   // Condensed program
   // If traffic is east and button is pushed then switches traffic from east to west
   if (digitalRead(westButton) == HIGH && !trafficWest) {
@@ -93,7 +104,7 @@ void loop() {
     trafficWest = true;
     switchTrafficTo(westYellow, westRed, westGreen);
 
-  // If traffic is west and button is pushed switches traffic from west to east
+    // If traffic is west and button is pushed switches traffic from west to east
   } else if (digitalRead(eastButton) == HIGH && trafficWest) {
     switchTrafficFrom(westGreen, westYellow, westRed);
     changeYellowLight(eastYellow);
@@ -115,7 +126,6 @@ void changeYellowLight(int yellowPin) {
 // Switch traffic flow either direction
 void switchTrafficFrom(int fromGreen, int fromYellow, int fromRed) {
   delay(flowTime);
-
   digitalWrite(fromGreen, LOW);
   digitalWrite(fromYellow, HIGH);
   delay(changeDelay);
@@ -128,6 +138,28 @@ void switchTrafficTo(int toYellow, int toRed, int toGreen) {
   digitalWrite(toYellow, LOW);
   digitalWrite(toRed, LOW);
   digitalWrite(toGreen, HIGH);
+}
+
+void pedestrianCrossing() {  // for part C
+
+  digitalWrite(westGreen, LOW);  // Turn both greens off
+  digitalWrite(eastGreen, LOW);
+  digitalWrite(westYellow, LOW);  // Turn both yellows off
+  digitalWrite(eastYellow, LOW);
+  digitalWrite(westRed, HIGH);  // Turn both reds on
+  digitalWrite(eastRed, HIGH);
+
+  delay(5000);  // 5 seconds to give dumb drivers time to react
+
+  digitalWrite(pedWhite, HIGH);  // Pedestrian white LED ON
+  delay(pedTime);
+  digitalWrite(pedWhite, LOW);
+
+  if (trafficWest == true) {  // auto resume traffic after old lady is safely across
+    switchTrafficTo(westYellow, westRed, westGreen);
+  } else {
+    switchTrafficTo(eastYellow, eastRed, eastGreen);
+  }
 }
 /*
 void switchTraffic(bool toWest) {
